@@ -7,6 +7,7 @@ const app = express();
 
 app.use('/products', productRoutes);
 
+// TODO: Create cart routes and model
 const ShoppingCart = require('./ShoppingCart.js');
 
 app.post('/checkout', (req, res) => {

@@ -2,20 +2,19 @@
 
 const router = require('express').Router();
 const bodyParser = require('body-parser');
-const ProductsController = require('../ProductsController');
-const products = require('../data/products.json');
+const Product = require('../models/product');
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
-const productsController = new ProductsController(products);
-
-router.get('/', (req, res) =>
-  res.json(productsController.getProductCodes()),
-);
+router.get('/', (req, res) => {
+  const productCodes = Product.getProductCodes();
+  res.json(productCodes);
+});
 
 router.get('/:code', (req, res) => {
-  const product = productsController.getProduct(req.params.code);
+  const { code } = req.params;
+  const product = Product.getProduct(code);
   if (product) {
     return res.json(product);
   } else {
