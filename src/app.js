@@ -1,33 +1,13 @@
 'use strict';
 
 const express = require('express');
-const bodyParser = require('body-parser');
-const ProductsController = require('./ProductsController');
-const products = require('./data/products.json');
-const ShoppingCart = require('./ShoppingCart.js');
+const productRoutes = require('./routes/product');
 
 const app = express();
-const productsController = new ProductsController(products);
 
-app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  }),
-);
+app.use('/products', productRoutes);
 
-app.get('/products/:code', (req, res) => {
-  const product = productsController.getProduct(req.params.code);
-  if (product) {
-    return res.json(product);
-  } else {
-    return res.sendStatus(404);
-  }
-});
-
-app.get('/products', (req, res) =>
-  res.json(productsController.getProductCodes()),
-);
+const ShoppingCart = require('./ShoppingCart.js');
 
 app.post('/checkout', (req, res) => {
   const items = req.body.map(x => productsController.getProduct(x));

@@ -1,9 +1,9 @@
 const request = require('supertest');
-const app = require('./app');
+const app = require('../../app');
 
 // mock out data file
 jest.mock(
-  './data/products.json',
+  '../../data/products.json',
   () => [
     {
       price: 24.99,
@@ -19,17 +19,17 @@ jest.mock(
   { virtual: true },
 );
 
-describe('App', () => {
-  describe('/products', () => {
-    it('return all products', async () => {
+describe('/products', () => {
+  describe('GET /', () => {
+    it('should return all products', async () => {
       const response = await request(app).get('/products');
       expect(response.statusCode).toBe(200);
-      expect(response.body).toEqual(['CHAIR_RED', 'DIS_10-CHAIR_BLUE']);
+      expect(response.body.length).toEqual(2);
     });
   });
 
-  describe('/products/<PRODUCT_CODE>', () => {
-    it('Return data for RED CHAIR', async () => {
+  describe('GET /<PRODUCT_CODE>', () => {
+    it("should return the requested product's data", async () => {
       const response = await request(app).get('/products/CHAIR_RED');
       expect(response.statusCode).toBe(200);
       expect(response.body).toEqual({
@@ -39,8 +39,8 @@ describe('App', () => {
       });
     });
 
-    it('Return 404 when data cannot be found', async () => {
-      const response = await request(app).get('/products/FAKEY_PRODUC_CODE');
+    it('should return 404 when the requested product is not found', async () => {
+      const response = await request(app).get('/products/FAKE_PRODUCT_CODE');
       expect(response.statusCode).toBe(404);
     });
   });
